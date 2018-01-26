@@ -2,10 +2,20 @@
 
 usage () {
 	echo "Usage: $0 <containers|images|all>"
+	echo "  stop       - stops running and created docker containers"
 	echo "  containers - removes stopped docker containers"
 	echo "  images     - removes unnamed docker images"
 	echo "  all        - all of the above"
 	echo "  help       - prints this message"
+}
+
+stop_containers () {
+	CONTAINERS=$(docker ps -a|awk '/Up|Created /{printf("%s ", $1)}')
+	if [[ -z $CONTAINERS ]]  ; then
+		echo "no active or created containers found"
+	else
+		docker stop $CONTAINERS
+       	fi
 }
 
 remove_containers () {
@@ -32,6 +42,9 @@ if [ $# -ne 1 ]; then
 fi
 
 case $1 in
+	stop)
+		stop_containers
+		;;
 	containers)
 		remove_containers
 		;;
@@ -39,6 +52,7 @@ case $1 in
 		remove_images
 		;;
 	all)
+		stop_containers
 		remove_containers
 		remove_images
 		;;

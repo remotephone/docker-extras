@@ -19,7 +19,7 @@ stop_containers () {
 }
 
 remove_containers () {
-	CONTAINERS=$(docker ps -a|awk '/Exited /{printf("%s ", $1)}')
+	CONTAINERS=$(docker ps -a|awk '/Exited |Created /{printf("%s ", $1)}')
 	if [[ -z $CONTAINERS ]]  ; then
 		echo "no inactive containers found"
 	else
